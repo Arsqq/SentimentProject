@@ -7,11 +7,16 @@
   font-family: 'Poppins', sans-serif;
 }
 
+.overlay{
+	position: center;
+	margin-right: auto;
+}
 .box
 {
-	position: relative;
-	width: 380px !important;
-	height: 420px !important;
+	position: sticky;
+	width: 480px;
+	margin-right: auto;
+	height: 420px;
 	background: #1c1c1c;
 	border-radius: 8px;
 	overflow: hidden;

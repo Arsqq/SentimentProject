@@ -3,8 +3,9 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
+import "../staticFilesCss/formsStyle.css"
 
-import AuthService from "../Service/auth.service";
+import AuthService from "../../Service/auth.service";
 
 const required = value => {
   if (!value) {
@@ -168,7 +169,7 @@ export default class Register extends Component {
                 </div>
 
                 <div className="form-group">
-                  <button className="btn btn-primary btn-block">Sign Up</button>
+                  <button className="btn btn-primary btn-block " >Sign Up</button>
                 </div>
               </div>
             )}

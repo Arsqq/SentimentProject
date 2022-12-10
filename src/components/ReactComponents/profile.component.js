@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
-import AuthService from "../Service/auth.service";
-import './assets/fonts/font-awesome.min.css';
-import './assets/bootstrap/css/bootstrap.min.css';
-import './assets/fonts/fontawesome-all.min.css';
-import DropDownComponent from "../components/dropDown.component";
-import './assets/js/bs-init'
-import './assets/js/theme';
+import AuthService from "../../Service/auth.service";
+import '../assets/fonts/font-awesome.min.css';
+import '../assets/bootstrap/css/bootstrap.min.css';
+import '../assets/fonts/fontawesome-all.min.css';
+import '../assets/bootstrap/js/bootstrap.min';
 
+import EventBus from '../../common/EventBus'
 
 export default class Profile extends Component {
   constructor(props) {
     super(props);
-
+    this.logOut = this.logOut.bind(this);
     this.state = {
       redirect: null,
       userReady: false,
@@ -25,9 +24,24 @@ export default class Profile extends Component {
 
     if (!currentUser) this.setState({ redirect: "/home" });
     this.setState({ currentUser: currentUser, userReady: true })
+
+    EventBus.on("logout", () => {
+      this.logOut();
+    });
+
+  }
+  componentWillUnmount() {
+    EventBus.remove("logout");
   }
 
-
+    logOut() {
+    AuthService.logout();
+    this.setState({
+      showModeratorBoard: false,
+      showAdminBoard: false,
+      currentUser: undefined,
+    });
+  }
 
   render() {
     if (this.state.redirect) {
@@ -66,20 +80,17 @@ export default class Profile extends Component {
               <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
                 <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button">
                   <i class="fas fa-bars"/></button>
-                  <li class="nav-item dropdown no-arrow mx-1">
-                    <div class="shadow dropdown-list dropdown-menu dropdown-menu-end" aria-labelledby="alertsDropdown"/>
-                  </li>
                   <div class="d-none d-sm-block topbar-divider"/>
                   <li class="nav-item dropdown no-arrow">
                     <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
-                      <span class="d-none d-lg-inline me-2 text-gray-600 small">Moderator 1</span></a>
+                      <span class="d-none d-lg-inline me-2 text-gray-600 small">{currentUser.username}</span></a>
                       <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
                         <a class="dropdown-item" href="#">
                         <i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"/>&nbsp;Profile</a><a class="dropdown-item" href="#">
                         <i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"/>&nbsp;Settings</a><a class="dropdown-item" href="#">
                         <i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"/>&nbsp;Activity log</a>
                         <div class="dropdown-divider"/>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item"  href="/login" onClick={this.logOut}>
                           <i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400">
                           </i>&nbsp;Logout</a>
                       </div>

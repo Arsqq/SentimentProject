@@ -2,11 +2,10 @@ import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import "./style.css";
-
-import AuthService from "../Service/auth.service";
-
-import { withRouter } from '../common/with-router';
+import AuthService from "../../Service/auth.service";
+import "../staticFilesCss/formsStyle.css"
+import {Helmet} from "react-helmet"
+import { withRouter } from '../../common/with-router';
 
 const required = value => {
   if (!value) {
@@ -80,34 +79,38 @@ class Login extends Component {
   }
 
   render() {
-    return (
-          <div className="box">
-            <Form className="form" onSubmit={this.handleLogin} ref={c => {this.form = c;}}>
-              <h2>Sign in</h2>
-              <div className="inputBox">
-                <input type="text" className="input" name="username" value={this.state.username} onChange={this.onChangeUsername}/>
-                <i/>
+    const rightForm= <div className="overlay">
+        <Form className="my-form" onSubmit={this.handleLogin} ref={c => {this.form = c;}}>
+          <div className="con">
+            <header className="head-form">
+              <h2>Log In</h2>
+              <p>login here using your username and password</p>
+            </header>
+            <br/>
+            <div className="field-set"><span className="input-item"><i className="fa fa-user-circle"/></span>
+
+            <input type="text" className="form-input" name="username" value={this.state.username} onChange={this.onChangeUsername}/>
+              <br/>
+              <span className="input-item"><i className="fa fa-key"/></span>
+            <input type="password" className="form-input" name="password" value={this.state.password} onChange={this.onChangePassword} validations={[required]}/>
+              <button className="button-custom" type="submit"> Log In</button>
+          {this.state.message && (
+              <div className="form-group">
+                <div className="alert alert-danger" role="alert">
+                  {this.state.message}
+                </div>
               </div>
-              <div className="inputBox">
-                <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.onChangePassword} validations={[required]}/>
-                <i/>
+          )}
+              <div className="other">
+                <a className="btn submits sign-up" href="/register">Sign Up<i className="fa fa-user-plus" aria-hidden="true"/></a>
               </div>
-              <button className="submitForButton">
-                <span>Login</span>
-              </button>
-              {this.state.message && (
-                  <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                      {this.state.message}
-                    </div>
-                  </div>
-              )}
-              <div className="links">
-                <a href="http://localhost:3000/register">Signup</a>
-              </div>
-              <CheckButton style={{ display: "none" }} ref={c => {this.checkBtn = c;}}/>
-            </Form>
+            </div>
           </div>
+          <CheckButton style={{ display: "none" }} ref={c => {this.checkBtn = c;}}/>
+        </Form>
+      </div>
+    return (
+        rightForm
     );
   }
 }
