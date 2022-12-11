@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import AuthService from "../../Service/auth.service";
+import AuthService from "../Service/auth.service";
 import "../staticFilesCss/formsStyle.css"
 import {Helmet} from "react-helmet"
 import { withRouter } from '../../common/with-router';

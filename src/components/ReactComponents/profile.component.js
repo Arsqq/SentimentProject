@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { Navigate } from "react-router-dom";
-import AuthService from "../../Service/auth.service";
+import AuthService from "../Service/auth.service";
 import '../assets/fonts/font-awesome.min.css';
 import '../assets/bootstrap/css/bootstrap.min.css';
 import '../assets/fonts/fontawesome-all.min.css';
-import '../assets/bootstrap/js/bootstrap.min';
-
+import {NavBarComponent} from "./navBar.component"
 import EventBus from '../../common/EventBus'
 
 export default class Profile extends Component {
@@ -52,29 +51,7 @@ export default class Profile extends Component {
     const { currentUser } = this.state;
     const leftSide = (
         <div id="wrapper">
-        <nav className="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
-          <div className="container-fluid d-flex flex-column p-0"><a
-              className="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
-            <div className="sidebar-brand-icon rotate-n-15"><i className="fas fa-laugh-wink"/></div>
-            <div className="sidebar-brand-text mx-3">
-              <span>SENTIT</span>
-            </div>
-          </a>
-            <ul className="navbar-nav text-light" id="accordionSidebar">
-              <li className="nav-item"><a className="nav-link active"><i
-                  className="fas fa-tachometer-alt"/><span>Dashboard</span></a></li>
-              <li className="nav-item"><a className="nav-link"><i className="fas fa-table"/><span>Table</span></a><a
-                  className="nav-link"><i className="far fa-user-circle"/><span>Login</span></a><a className="nav-link"><i
-                  className="fas fa-user-circle"/><span>Register</span></a><a className="nav-link"/></li>
-              <li className="nav-item"/>
-              <li className="nav-item"/>
-              <li className="nav-item"/>
-            </ul>
-            <div className="text-center d-none d-md-inline">
-              <button className="btn rounded-circle border-0" id="sidebarToggle" type="button"/>
-            </div>
-          </div>
-        </nav>
+      <NavBarComponent> </NavBarComponent>
           <div class="d-flex flex-column" id="content-wrapper">
             <div id="content">
               <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">

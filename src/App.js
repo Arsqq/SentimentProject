@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import AuthService from "./Service/auth.service";
+import AuthService from "./components/Service/auth.service";
 import Login from "./components/ReactComponents/login.component";
 import Register from "./components/ReactComponents/register.component";
 import Home from "./components/ReactComponents/home.component";
 import Profile from "./components/ReactComponents/profile.component";
 import EventBus from "./common/EventBus";
+import UserTable from "./components/ReactComponents/userTable.component"
 
 class App extends Component {
     constructor(props) {
@@ -53,6 +54,7 @@ class App extends Component {
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/profile" element={<Profile />} />
+                        <Route path="/userTable" element={<UserTable />} />
                     </Routes>
                 </div>
         );
