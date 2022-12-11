@@ -5,6 +5,7 @@ import '../assets/fonts/font-awesome.min.css';
 import '../assets/bootstrap/css/bootstrap.min.css';
 import '../assets/fonts/fontawesome-all.min.css';
 import {NavBarComponent} from "./navBar.component"
+import FileUpload from "./fileUpload.component";
 import EventBus from '../../common/EventBus'
 
 export default class Profile extends Component {
@@ -17,6 +18,7 @@ export default class Profile extends Component {
       currentUser: { username: "" }
     };
   }
+
 
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
@@ -76,10 +78,7 @@ export default class Profile extends Component {
             </div>
           </nav>
           <div class="container-fluid">
-            <div class="d-sm-flex justify-content-between align-items-center mb-4">
-              <h3 class="text-dark mb-0">Dashboard</h3><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="#">
-              <i class="fas fa-download fa-sm text-white-50"/>&nbsp;Generate Sentiment Report</a>
-            </div>
+          <FileUpload/>
             <div class="row">
               <div class="col-md-6 col-xl-3 mb-4">
                 <div class="card shadow border-start-primary py-2">
