@@ -58,6 +58,7 @@ function Row(props: { row: ReturnType<createData> }) {
                 </TableCell>
                 <TableCell align="right">{row.mail}</TableCell>
                 <TableCell align="right">{row.roles[0].name}</TableCell>
+                <TableCell align="right">{row.dateOfLastLogOn}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -72,10 +73,24 @@ function Row(props: { row: ReturnType<createData> }) {
                                         <TableCell>Date</TableCell>
                                         <TableCell>Analysis ID</TableCell>
                                         <TableCell align="right">Data Amount</TableCell>
+                                        <TableCell align="right">Positive percent</TableCell>
+                                        <TableCell align="right">Negative percent</TableCell>
                                         <TableCell align="right">Verdict</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+                                    {row.performedAnalyzes.map((analRow,index) => (
+                                        <TableRow key={index}>
+                                            <TableCell component="th" scope="row">
+                                                {analRow.runAt}
+                                            </TableCell>
+                                            <TableCell>{analRow.id}</TableCell>
+                                            <TableCell align="right">{analRow.amountOfData}</TableCell>
+                                            <TableCell align="right">{analRow.positivePercent}</TableCell>
+                                            <TableCell align="right">{analRow.negativePercent}</TableCell>
+                                            <TableCell align="right">MOSTLY POSITIVE</TableCell>
+                                        </TableRow>
+                                    ))}
                                 </TableBody>
                             </Table>
                         </Box>
@@ -94,10 +109,10 @@ export default function CollapsibleTable() {
     },[])
 
     function getUsers(){
-        const getCall=axios.get(API_URL+'listUsers',{headers:authHeader()})
+        axios.get(API_URL+'listUsers',{headers:authHeader()})
             .then(res=>{
                 setUserList(res.data)
-                console.log(res.data)})
+                console.log(res.data)});
     }
 
     return (

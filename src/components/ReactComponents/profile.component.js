@@ -3,10 +3,14 @@ import { Navigate } from "react-router-dom";
 import AuthService from "../Service/auth.service";
 import '../assets/fonts/font-awesome.min.css';
 import '../assets/bootstrap/css/bootstrap.min.css';
+import "../staticFilesCss/formsStyle.css"
 import '../assets/fonts/fontawesome-all.min.css';
 import {NavBarComponent} from "./navBar.component"
 import FileUpload from "./fileUpload.component";
 import EventBus from '../../common/EventBus'
+import axios from "axios";
+import authHeader from "../Service/auth-header";
+
 
 export default class Profile extends Component {
   constructor(props) {
@@ -15,10 +19,24 @@ export default class Profile extends Component {
     this.state = {
       redirect: null,
       userReady: false,
-      currentUser: { username: "" }
+      currentUser: { username: "" },
+      trueSentiments:[],
     };
   }
+  getSentiments(){
+    let url="http://localhost:8060/api/sentiment/getSentimentList";
+    axios.get(url,{headers:authHeader()})
+        .then(res=>{
+          let trueSentiments;
+          trueSentiments=res.data;
+          console.log(trueSentiments)
+          this.setState({
+            trueSentiments:trueSentiments,
 
+          });
+          localStorage.setItem('sents',JSON.stringify(trueSentiments))
+        })
+  }
 
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
@@ -44,22 +62,62 @@ export default class Profile extends Component {
     });
   }
 
+  positiveCounts(){
+    let count=0
+    const data=this.state.trueSentiments
+    for (const elem of data){
+      if(elem.sentiment.sentiment==="POSITIVE"){
+        count +=1
+      }
+    }
+    return count
+  }
+
+  neutralCounts(){
+    let count=0
+    const data=this.state.trueSentiments
+    for (const elem of data){
+      if(elem.sentiment.sentiment==="NEUTRAL"){
+        count +=1
+      }
+    }
+    return count
+  }
+
+  negativeCounts(){
+    let count=0
+    const data=this.state.trueSentiments
+    for (const elem of data){
+      if(elem.sentiment.sentiment==="NEGATIVE"){
+        count +=1
+      }
+    }
+    return count
+  }
+
+
   render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} />
     }
-
-
+    const negative=this.negativeCounts()
+    const positive=this.positiveCounts()
+    const neutral=this.neutralCounts()
+    const dataAmount=this.state.trueSentiments
     const { currentUser } = this.state;
     const leftSide = (
-        <div id="wrapper">
+        <div id="wrapper" class="specialDiv">
       <NavBarComponent> </NavBarComponent>
           <div class="d-flex flex-column" id="content-wrapper">
-            <div id="content">
+            <div id="content" class="specialDiv">
               <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
-                <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button">
-                  <i class="fas fa-bars"/></button>
-                  <div class="d-none d-sm-block topbar-divider"/>
+                <div class="container-fluid">
+                  <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button">
+                    <i class="fas fa-bars"/></button>
+                  <a className="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"
+                     onClick={() => this.getSentiments()}>
+                    <i className="fas fa-download fa-sm text-white-50"/>
+                    &nbsp;Show Data</a>
                   <li class="nav-item dropdown no-arrow">
                     <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
                       <span class="d-none d-lg-inline me-2 text-gray-600 small">{currentUser.username}</span></a>
@@ -86,7 +144,7 @@ export default class Profile extends Component {
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
                         <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>DATA HANDLED for last analysis)</span></div>
-                        <div class="text-dark fw-bold h5 mb-0"><span>1000 ROWS</span></div>
+                        <div class="text-dark fw-bold h5 mb-0"><span>{dataAmount.length}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
                     </div>
@@ -99,7 +157,9 @@ export default class Profile extends Component {
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
                         <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>positive sentiments)</span></div>
-                        <div class="text-dark fw-bold h5 mb-0"><span>200 ROWS</span></div>
+                        <div class="text-dark fw-bold h5 mb-0"><span>
+                          {positive}
+                        </span></div>
                       </div>
                     </div>
                   </div>
@@ -111,7 +171,7 @@ export default class Profile extends Component {
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
                         <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>NEGATIVE CENTIMENTS</span></div>
-                        <div class="text-dark fw-bold h5 mb-0"><span>700 ROWS</span></div>
+                        <div class="text-dark fw-bold h5 mb-0"><span>{negative}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
                     </div>
@@ -124,7 +184,7 @@ export default class Profile extends Component {
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
                         <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>neutral sentiments</span></div>
-                        <div class="text-dark fw-bold h5 mb-0"><span>100 ROWS</span></div>
+                        <div class="text-dark fw-bold h5 mb-0"><span>{neutral}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
                     </div>
