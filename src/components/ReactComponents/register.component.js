@@ -103,6 +103,7 @@ export default class Register extends Component {
             message: response.data.message,
             successful: true
           });
+
         },
         error => {
           const resMessage =
@@ -116,6 +117,7 @@ export default class Register extends Component {
             successful: false,
             message: resMessage
           });
+          this.props.router.navigate("/profile");
         }
       );
     }
@@ -123,54 +125,52 @@ export default class Register extends Component {
 
   render() {
     return (
-      <div className="box">
           <Form
             onSubmit={this.handleRegister}
             ref={c => {
-              this.form = c;
-            }}
-          >
+              this.form = c;}} class="my-form">
+            <div className="con">
+              <header className="head-form">
+                <h2>Sign Up</h2>
+                <p>Sign up your credentials</p>
+              </header>
+              <br/>
             {!this.state.successful && (
-              <div>
-                <div className="form-group">
-                  <label htmlFor="username">Username</label>
+                <div className="field-set">
+                  <label htmlFor="email">Username</label>
                   <Input
                     type="text"
-                    className="form-control"
+                    className="form-input"
                     name="username"
                     value={this.state.username}
                     onChange={this.onChangeUsername}
                     validations={[required, vusername]}
                   />
-                </div>
 
-                <div className="form-group">
                   <label htmlFor="email">Email</label>
                   <Input
                     type="text"
-                    className="form-control"
+                    className="form-input"
                     name="email"
                     value={this.state.email}
                     onChange={this.onChangeEmail}
                     validations={[required, email]}
                   />
-                </div>
 
-                <div className="form-group">
                   <label htmlFor="password">Password</label>
                   <Input
                     type="password"
-                    className="form-control"
+                    className="form-input"
                     name="password"
                     value={this.state.password}
                     onChange={this.onChangePassword}
                     validations={[required, vpassword]}
                   />
-                </div>
 
-                <div className="form-group">
-                  <button className="btn btn-primary btn-block " >Sign Up</button>
-                </div>
+                  <button className="button-custom" >Sign Up</button>
+                  <div className="other">
+                    <a className="btn submits sign-up" href="/login">Login<i className="fa fa-user-plus" aria-hidden="true"/></a>
+                  </div>
               </div>
             )}
 
@@ -188,6 +188,8 @@ export default class Register extends Component {
                 </div>
               </div>
             )}
+
+            </div>
             <CheckButton
               style={{ display: "none" }}
               ref={c => {
@@ -195,7 +197,6 @@ export default class Register extends Component {
               }}
             />
           </Form>
-        </div>
     );
   }
 }

@@ -79,7 +79,7 @@ class Login extends Component {
   }
 
   render() {
-    const rightForm= <div className="overlay">
+    const rightForm=
         <Form className="my-form" onSubmit={this.handleLogin} ref={c => {this.form = c;}}>
           <div className="con">
             <header className="head-form">
@@ -108,7 +108,6 @@ class Login extends Component {
           </div>
           <CheckButton style={{ display: "none" }} ref={c => {this.checkBtn = c;}}/>
         </Form>
-      </div>
     return (
         rightForm
     );

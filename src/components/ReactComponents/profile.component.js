@@ -194,12 +194,11 @@ export default class Profile extends Component {
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-7 col-xl-8">
               <div class="card shadow mb-4"/>
               <div class="card shadow mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <h6 class="text-primary fw-bold m-0">s</h6>
-                  <div class="chart-area"><canvas data-bss-chart="{&quot;type&quot;:&quot;doughnut&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Direct&quot;,&quot;Social&quot;,&quot;Referral&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;&quot;,&quot;backgroundColor&quot;:[&quot;#df4e4e&quot;,&quot;#1cc88a&quot;,&quot;#36b9cc&quot;],&quot;borderColor&quot;:[&quot;#ffffff&quot;,&quot;#ffffff&quot;,&quot;#ffffff&quot;],&quot;data&quot;:[&quot;70&quot;,&quot;20&quot;,&quot;10&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:false,&quot;labels&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;}},&quot;title&quot;:{&quot;fontStyle&quot;:&quot;normal&quot;}}}"/></div>
+                  <div class="chart-area"/>
                   <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
                     <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
                       <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#">&nbsp;Action</a><a class="dropdown-item" href="#">&nbsp;Another action</a>
@@ -211,10 +210,6 @@ export default class Profile extends Component {
                   <div class="text-center small mt-4"><span class="me-2"><i class="fas fa-circle text-primary"/>&nbsp;Negative</span><span class="me-2"><i class="fas fa-circle text-success"></i>Positive</span><span class="me-2"><i class="fas fa-circle text-info"></i>&nbsp;Neutral</span></div>
                 </div>
               </div>
-            </div>
-            <div class="col">
-              <div><canvas data-bss-chart="{&quot;type&quot;:&quot;bar&quot;,&quot;data&quot;:{&quot;labels&quot;:[&quot;Hi&quot;,&quot;Hello&quot;,&quot;Wow&quot;,&quot;Awesome&quot;,&quot;cringe&quot;,&quot;awful&quot;],&quot;datasets&quot;:[{&quot;label&quot;:&quot;Revenue&quot;,&quot;backgroundColor&quot;:&quot;#4e73df&quot;,&quot;borderColor&quot;:&quot;#4e73df&quot;,&quot;data&quot;:[&quot;491&quot;,&quot;1000&quot;,&quot;1200&quot;,&quot;3000&quot;,&quot;5434&quot;,&quot;6000&quot;]}]},&quot;options&quot;:{&quot;maintainAspectRatio&quot;:true,&quot;legend&quot;:{&quot;display&quot;:false,&quot;labels&quot;:{&quot;bold&quot;:false,&quot;italic&quot;:false,&quot;fontStyle&quot;:&quot;normal&quot;}},&quot;title&quot;:{&quot;fontStyle&quot;:&quot;bold&quot;}}}"/></div>
-            </div>
           </div>
         </div>
         </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
