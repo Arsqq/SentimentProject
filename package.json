@@ -24,6 +24,7 @@
     "react-scripts": "5.0.1",
     "react-tsparticles": "^2.6.0",
     "react-validation": "^3.0.7",
+    "react-wordcloud": "^1.2.7",
     "validator": "^13.7.0",
     "victory": "^36.6.8",
     "web-vitals": "^2.1.4"

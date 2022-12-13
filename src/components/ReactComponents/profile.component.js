@@ -10,7 +10,13 @@ import FileUpload from "./fileUpload.component";
 import EventBus from '../../common/EventBus'
 import axios from "axios";
 import authHeader from "../Service/auth-header";
+import {VictoryBar, VictoryPie, VictorySharedEvents} from "victory";
+import ReactWordcloud from 'react-wordcloud';
 
+
+function VictoryLabel(props: { y: number }) {
+  return null;
+}
 
 export default class Profile extends Component {
   constructor(props) {
@@ -21,6 +27,7 @@ export default class Profile extends Component {
       userReady: false,
       currentUser: { username: "" },
       trueSentiments:[],
+      wordStatistics:'',
     };
   }
   getSentiments(){
@@ -35,6 +42,19 @@ export default class Profile extends Component {
 
           });
           localStorage.setItem('sents',JSON.stringify(trueSentiments))
+        })
+  }
+
+  getWords(){
+    let url="http://localhost:8060/api/sentiment/getCommonWords";
+    axios.get(url)
+        .then(res=>{
+          let wordStatistics;
+          wordStatistics=res.data;
+          this.setState({
+            wordStatistics:wordStatistics,
+          });
+          localStorage.setItem('words',JSON.stringify(wordStatistics))
         })
   }
 
@@ -96,6 +116,7 @@ export default class Profile extends Component {
   }
 
 
+
   render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} />
@@ -103,8 +124,11 @@ export default class Profile extends Component {
     const negative=this.negativeCounts()
     const positive=this.positiveCounts()
     const neutral=this.neutralCounts()
+    const word=this.state.wordStatistics
     const dataAmount=this.state.trueSentiments
     const { currentUser } = this.state;
+    console.log(word)
+
     const leftSide = (
         <div id="wrapper" class="specialDiv">
       <NavBarComponent> </NavBarComponent>
@@ -112,12 +136,18 @@ export default class Profile extends Component {
             <div id="content" class="specialDiv">
               <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
                 <div class="container-fluid">
+                  <div class="col">
                   <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button">
                     <i class="fas fa-bars"/></button>
                   <a className="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"
                      onClick={() => this.getSentiments()}>
                     <i className="fas fa-download fa-sm text-white-50"/>
                     &nbsp;Show Data</a>
+                    <a className="btn btn-primary btn-sm d-none d-sm-inline-block" role="button"
+                       onClick={() => this.getWords()}>
+                      <i className="fas fa-download fa-sm text-white-50"/>
+                      &nbsp;Word Statistics</a>
+                  </div>
                   <li class="nav-item dropdown no-arrow">
                     <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
                       <span class="d-none d-lg-inline me-2 text-gray-600 small">{currentUser.username}</span></a>
@@ -143,7 +173,7 @@ export default class Profile extends Component {
                   <div class="card-body">
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
-                        <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>DATA HANDLED for last analysis)</span></div>
+                        <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>DATA HANDLED for last analysis</span></div>
                         <div class="text-dark fw-bold h5 mb-0"><span>{dataAmount.length}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
@@ -156,7 +186,7 @@ export default class Profile extends Component {
                   <div class="card-body">
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
-                        <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>positive sentiments)</span></div>
+                        <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>positive sentiments</span></div>
                         <div class="text-dark fw-bold h5 mb-0"><span>
                           {positive}
                         </span></div>
@@ -170,7 +200,7 @@ export default class Profile extends Component {
                   <div class="card-body">
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
-                        <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>NEGATIVE CENTIMENTS</span></div>
+                        <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>NEGATIVE SENTIMENTS</span></div>
                         <div class="text-dark fw-bold h5 mb-0"><span>{negative}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
@@ -197,22 +227,68 @@ export default class Profile extends Component {
               <div class="card shadow mb-4"/>
               <div class="card shadow mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                  <h6 class="text-primary fw-bold m-0">s</h6>
-                  <div class="chart-area"/>
-                  <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
-                    <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
-                      <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#">&nbsp;Action</a><a class="dropdown-item" href="#">&nbsp;Another action</a>
-                      <div class="dropdown-divider"/><a class="dropdown-item" href="#">&nbsp;Something else here</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div class="text-center small mt-4"><span class="me-2"><i class="fas fa-circle text-primary"/>&nbsp;Negative</span><span class="me-2"><i class="fas fa-circle text-success"></i>Positive</span><span class="me-2"><i class="fas fa-circle text-info"></i>&nbsp;Neutral</span></div>
+                  <svg viewBox="30 20 900 240">
+                    <VictorySharedEvents
+                        events={[{
+                          childName: ["pie", "bar"],
+                          target: "data",
+                          eventHandlers: {
+                            onMouseOver: () => {
+                              return [{
+                                childName: ["pie", "bar"],
+                                mutation: (props) => {
+                                  return {
+                                    style: Object.assign({}, props.style, {fill: "tomato"})
+                                  };
+                                }
+                              }];
+                            },
+                            onMouseOut: () => {
+                              return [{
+                                childName: ["pie", "bar"],
+                                mutation: () => {
+                                  return null;
+                                }
+                              }];
+                            }
+                          }
+                        }]}
+                    >
+                      <g transform={"translate(150, 50)"}>
+                        <VictoryBar name="bar"
+                                    width={300}
+                                    standalone={false}
+                                    style={{
+                                      data: { width: 20 },
+                                      labels: {fontSize: 25}
+                                    }}
+                                    data={[
+                                      {x: "a", y: 2}, {x: "b", y: 3}, {x: "c", y: 5}, {x: "d", y: 4}
+                                    ]}
+                                    labels={["a", "b", "c", "d"]}
+                                    labelComponent={<VictoryLabel y={290}/>}
+                        />
+                      </g>
+                      <g transform={"translate(0, -75)"}>
+                        <VictoryPie name="pie"
+                                    width={250}
+                                    standalone={false}
+                                    style={{ labels: {fontSize: 25, padding: 10}}}
+                                    data={[
+                                      {x: "a", y: 1}, {x: "b", y: 4}, {x: "c", y: 5}, {x: "d", y: 7}
+                                    ]}
+                        />
+                      </g>
+                    </VictorySharedEvents>
+                  </svg>
                 </div>
               </div>
+            <ReactWordcloud
+                words={word}
+            />
           </div>
         </div>
-        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+        </div>
         </div>
     );
     return (

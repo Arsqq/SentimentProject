@@ -42,6 +42,8 @@ class FileUpload extends React.Component{
 
     }
 
+
+
     getSentiments(){
         let url="http://localhost:8060/api/sentiment/getSentimentList";
         axios.get(url,{headers:authHeader()})

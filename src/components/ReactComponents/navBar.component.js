@@ -19,9 +19,6 @@ export function NavBarComponent(){
                 <li className="nav-item"/>
                 <li className="nav-item"/>
             </ul>
-            <div className="text-center d-none d-md-inline">
-                <button className="btn rounded-circle border-0" id="sidebarToggle" type="button"/>
-            </div>
         </div>
     </nav>;
 }
