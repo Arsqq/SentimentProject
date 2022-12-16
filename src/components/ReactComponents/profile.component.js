@@ -15,6 +15,8 @@ import {Chart} from "react-google-charts";
 import merge from "validator/es/lib/util/merge";
 import {VictoryLine} from "victory";
 import ReactWordcloud from "react-wordcloud";
+import MaterialReactTable from "material-react-table"
+
 
 
 
@@ -227,8 +229,29 @@ export default class Profile extends Component {
     console.log(negativeFilterByPolarity)
     const positiveFilter=dataAmount.filter(obj=>obj.sentiment.sentiment ==='POSITIVE')
     console.log(positiveFilter)
-    const positiveFilterByPolarity=negativeFilter.filter(obj=>obj.sentiment.polarity>=0.985)
+    const positiveFilterByPolarity=positiveFilter.filter(obj=>obj.sentiment.polarity>=0.985)
     console.log(positiveFilterByPolarity)
+    const mostNegativeSentiments=negativeFilterByPolarity.reduce((acc, curr) => {
+      if(!acc) {
+        acc = [curr.sentiment]
+      } else {
+        acc = acc.concat(curr.sentiment);
+      }
+
+      return acc;
+    }, [])
+    const mostPositiveSentiments=positiveFilterByPolarity.reduce((acc, curr) => {
+      if(!acc) {
+        acc = [curr.sentiment]
+      } else {
+        acc = acc.concat(curr.sentiment);
+      }
+
+      return acc;
+    }, [])
+
+    console.log(mostNegativeSentiments)
+    console.log(mostPositiveSentiments)
 
 
     const sentimentsForIphone=entityIphoneFilter.reduce((acc, curr) => {
@@ -399,7 +422,13 @@ export default class Profile extends Component {
 
     console.log(dataForIphoneChart)
 
-
+    const columns = [
+      { header: "Sentiment", accessorKey: "sentiment" },
+      { header: "Polarity", accessorKey: "polarity" },
+      { header: "Text", accessorKey: "textContent"},
+    ];
+    const negativeTableData=mostNegativeSentiments
+    const positiveTableDta=mostPositiveSentiments
 
 
     console.log(dataForAllEntities)
@@ -581,6 +610,8 @@ export default class Profile extends Component {
               />
             </VictoryChart>
             </div>
+            <MaterialReactTable columns={columns} data={positiveTableDta} />
+            <MaterialReactTable columns={columns} data={negativeTableData} />
           </div>
         </div>
         </div>
