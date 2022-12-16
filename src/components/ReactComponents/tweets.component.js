@@ -13,6 +13,8 @@ import FileUpload from "./fileUpload.component";
 import {Chart} from "react-google-charts";
 import {VictoryArea, VictoryChart, VictoryClipContainer, VictoryLine, VictoryTheme} from "victory";
 import merge from "validator/es/lib/util/merge";
+import ReactWordcloud from "react-wordcloud";
+import authHeader from "../Service/auth-header";
 
 class TweetsComponent extends Component {
     constructor() {
@@ -29,8 +31,9 @@ class TweetsComponent extends Component {
         })
     }
     onSubmit(){
-        console.log("Hi")
-        axios.post("http://localhost:5000/tweets", this.state.searchValue)
+        axios.post("http://localhost:5000/tweets",{
+            value:this.state.searchValue
+        })
             .then((res) => {
                 console.log(res.data)
                 this.setState({
@@ -39,9 +42,7 @@ class TweetsComponent extends Component {
             });
     }
 
-    click(){
-        console.log("hi")
-    }
+
 
     positiveCounts(){
         let count=0
@@ -123,7 +124,7 @@ class TweetsComponent extends Component {
             return acc;
         }, [])
 
-        console.log(resEntities)
+
 
         const resSentiment = dataAmount.reduce((acc, curr) => {
             if(!acc) {
@@ -135,20 +136,14 @@ class TweetsComponent extends Component {
             return acc;
         }, [])
 
-        const akk=merge(resEntities,resSentiment)
-        console.log(akk)
         console.log(resSentiment)
-
-        console.log(dataAmount)
+        console.log(resEntities)
 
 
         const entityKey=this.state.searchValue
-        console.log(entityKey)
         const entityIphoneFilter=dataAmount.filter(obj=>obj.entities.find(e => e.name.toLowerCase().includes(entityKey)))
         console.log(entityIphoneFilter)
 
-        const entityKeyForSamsung="samsung"
-        const entitySamsungFilter=dataAmount.filter(obj=>obj.entities.find(e => e.name.toLowerCase().includes(entityKeyForSamsung)))
 
 
 
@@ -162,21 +157,13 @@ class TweetsComponent extends Component {
             return acc;
         }, [])
 
-        const sentimentForSamsung=entitySamsungFilter.reduce((acc, curr) => {
-            if(!acc) {
-                acc = [curr.sentiment]
-            } else {
-                acc = acc.concat(curr.sentiment);
-            }
-
-            return acc;
-        }, [])
 
 
-        const afterFilter = resEntities.filter(el => el.type !== 'PERSON' && el.type !== 'DATE' && el.type !=='PERCENT'
+        const afterFilter = resEntities.filter(el => el.type !== 'DATE' && el.type !=='PERCENT'
             && el.type !=='CARDINAL' && el.type !=='NORP' && el.type !=='MONEY' && el.type !=='TIME' && el.type !=='QUANTITY'
             && el.type !=='ORDINAL')
         console.log(afterFilter)
+
         let key="name"
         console.log(this.findOcc(afterFilter,key))
 
@@ -210,34 +197,6 @@ class TweetsComponent extends Component {
             return count
         }
 
-
-        function positiveSamsungCounts(){
-            let count=0
-            for (const elem of sentimentForSamsung){
-                if(elem.sentiment==="POSITIVE"){
-                    count +=1
-                }
-            }
-            return count
-        }
-        function neutralSamsungCounts(){
-            let count=0
-            for (const elem of sentimentForSamsung){
-                if(elem.sentiment==="NEUTRAL"){
-                    count +=1
-                }
-            }
-            return count
-        }
-        function negativeSamsungCounts(){
-            let count=0
-            for (const elem of sentimentForSamsung){
-                if(elem.sentiment==="NEGATIVE"){
-                    count +=1
-                }
-            }
-            return count
-        }
 
 
 
@@ -287,69 +246,131 @@ class TweetsComponent extends Component {
             ["Neutral", neutralIphoneCounts()],
         ];
 
-        const dataForSamsungChart=[
-            ["Polarity", "Count"],
-            ["Positive", positiveSamsungCounts()],
-            ["Negative", negativeSamsungCounts()],
-            ["Neutral", neutralSamsungCounts()],
-        ];
-
-
 
         return (
-            <div id="wrapper">
+            <div id="wrapper" className="specialDiv">
                 <NavBarComponent> </NavBarComponent>
-                <div class="col">
-                    <form class="my-form2">
-                        <input type="text" value={this.state.searchValue} class="form-input2" onChange={this.onChange}/>
-                        <button type="button" className="button-custom2" onClick={() =>this.onSubmit()}>Submit</button>
-                    </form>
-                </div>
-                <div className="row">
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                        <Chart
-                            chartType="PieChart"
-                            width="100%"
-                            height="400px"
-                            data={data}
-                            options={options}
-                        />
-                        <Chart
-                            chartType="PieChart"
-                            width="100%"
-                            height="400px"
-                            data={dataForAllEntities}
-                            options={optionS}
-                        />
-
-                        <Chart
-                            chartType="PieChart"
-                            width="100%"
-                            height="400px"
-                            data={dataForIphoneChart}
-                            options={optionsForIphone}
-                        />
+                <div className="d-flex flex-column" id="content-wrapper">
+                    <div id="content" className="specialDiv">
+                        <form>
+                                <input  type="text" value={this.state.searchValue} className="button-64" onChange={this.onChange}/>
+                                <div className="row">
+                                        <button type="button" class="button-64" onClick={() => this.onSubmit()}>Submit</button>
+                            </div>
+                        </form>
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-md-6 col-xl-3 mb-4">
+                                    <div className="card shadow border-start-primary py-2">
+                                        <div className="card-body">
+                                            <div className="row align-items-center no-gutters">
+                                                <div className="col me-2">
+                                                    <div className="text-uppercase text-primary fw-bold text-xs mb-1">
+                                                        <span>DATA HANDLED for last analysis</span></div>
+                                                    <div className="text-dark fw-bold h5 mb-0">
+                                                        <span>{dataAmount.length}</span></div>
+                                                </div>
+                                                <div className="col-auto"><i
+                                                    className="fas fa-comments fa-2x text-gray-300"/></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6 col-xl-3 mb-4">
+                                    <div className="card shadow border-start-success py-2"
+                                         style={{fontFamily: 'Chocolate cyr-lat'}}>
+                                        <div className="card-body">
+                                            <div className="row align-items-center no-gutters">
+                                                <div className="col me-2">
+                                                    <div className="text-uppercase text-success fw-bold text-xs mb-1">
+                                                        <span>positive sentiments</span></div>
+                                                    <div className="text-dark fw-bold h5 mb-0"><span>{positive}</span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6 col-xl-3 mb-4" style={{fontFamily: 'Chocolate cyr-lat'}}>
+                                    <div className="card shadow border-start-warning py-2">
+                                        <div className="card-body">
+                                            <div className="row align-items-center no-gutters">
+                                                <div className="col me-2">
+                                                    <div className="text-uppercase text-danger fw-bold text-xs mb-1">
+                                                        <span>NEGATIVE SENTIMENTS</span></div>
+                                                    <div className="text-dark fw-bold h5 mb-0"><span>{negative}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="col-auto"><i
+                                                    className="fas fa-comments fa-2x text-gray-300"/></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-6 col-xl-3 mb-4" style={{fontFamily: 'Chocolate cyr-lat'}}>
+                                    <div className="card shadow border-start-warning py-2">
+                                        <div className="card-body">
+                                            <div className="row align-items-center no-gutters">
+                                                <div className="col me-2">
+                                                    <div className="text-uppercase text-warning fw-bold text-xs mb-1">
+                                                        <span>neutral sentiments</span></div>
+                                                    <div className="text-dark fw-bold h5 mb-0"><span>{neutral}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="col-auto"><i
+                                                    className="fas fa-comments fa-2x text-gray-300"/></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="card-header d-flex justify-content-between align-items-center">
+                                <Chart
+                                    chartType="PieChart"
+                                    width="100%"
+                                    height="400px"
+                                    data={data}
+                                    options={options}
+                                />
+                                <Chart
+                                    chartType="PieChart"
+                                    width="100%"
+                                    height="400px"
+                                    data={dataForAllEntities}
+                                    options={optionS}
+                                />
+                                <Chart
+                                    chartType="PieChart"
+                                    width="100%"
+                                    height="400px"
+                                    data={dataForIphoneChart}
+                                    options={optionsForIphone}
+                                />
+                            </div>
+                            <div className="card-header d-flex justify-content-between align-items-center">
+                                <h2>Most common entities</h2>
+                                <VictoryChart
+                                    theme={VictoryTheme.material}
+                                    domain={{x: [1, 14], y: [5, 100]}}
+                                    height={500}
+                                    width={1000}
+                                    domainPadding={{x: 1, y: 20}}
+                                >
+                                    <VictoryLine
+                                        style={{
+                                            data: {stroke: "#c43a31"},
+                                            parent: {border: "1px solid #ccc"}
+                                        }}
+                                        data={occData}
+                                        x="name"
+                                        y="occurrence"
+                                        interpolation={2}/>
+                                </VictoryChart>
+                            </div>
+                        </div>
                     </div>
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                        <VictoryChart
-                            theme={VictoryTheme.material}
-                            domain={{x: [1, 6], y: [2, 200]}}
-                            height={300}
-                            domainPadding={{x: 20, y: 20}}
-                        >
-                            <VictoryLine
-                                style={{
-                                    data: {stroke: "#c43a31"},
-                                    parent: {border: "1px solid #ccc"}
-                                }}
-                                data={occData}
-                                x="name"
-                                y="occurrence"
-                                interpolation={2}/>
-                        </VictoryChart>
-                    </div>
                 </div>
-
             </div>
         );
     }

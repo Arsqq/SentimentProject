@@ -10,15 +10,13 @@ import FileUpload from "./fileUpload.component";
 import EventBus from '../../common/EventBus'
 import axios from "axios";
 import authHeader from "../Service/auth-header";
-import {VictoryArea, VictoryChart, VictoryClipContainer, VictoryTheme} from "victory";
+import {VictoryArea, VictoryBar, VictoryChart, VictoryClipContainer, VictoryHistogram, VictoryTheme} from "victory";
 import {Chart} from "react-google-charts";
 import merge from "validator/es/lib/util/merge";
 import {VictoryLine} from "victory";
 import ReactWordcloud from "react-wordcloud";
 
-function VictoryLabel(props: { y: number }) {
-  return null;
-}
+
 
 export default class Profile extends Component {
   constructor(props) {
@@ -211,12 +209,10 @@ export default class Profile extends Component {
       return acc;
     }, [])
 
-    const akk=merge(resEntities,resSentiment)
-    console.log(akk)
+
     console.log(resSentiment)
 
     console.log(dataAmount)
-
 
     const entityKey="iphone"
     const entityIphoneFilter=dataAmount.filter(obj=>obj.entities.find(e => e.name.toLowerCase().includes(entityKey)))
@@ -225,6 +221,14 @@ export default class Profile extends Component {
     const entityKeyForSamsung="samsung"
     const entitySamsungFilter=dataAmount.filter(obj=>obj.entities.find(e => e.name.toLowerCase().includes(entityKeyForSamsung)))
 
+    const negativeFilter=dataAmount.filter(obj=>obj.sentiment.sentiment ==='NEGATIVE')
+    console.log(negativeFilter)
+    const negativeFilterByPolarity=negativeFilter.filter(obj=>obj.sentiment.polarity>=0.985)
+    console.log(negativeFilterByPolarity)
+    const positiveFilter=dataAmount.filter(obj=>obj.sentiment.sentiment ==='POSITIVE')
+    console.log(positiveFilter)
+    const positiveFilterByPolarity=negativeFilter.filter(obj=>obj.sentiment.polarity>=0.985)
+    console.log(positiveFilterByPolarity)
 
 
     const sentimentsForIphone=entityIphoneFilter.reduce((acc, curr) => {
@@ -524,14 +528,14 @@ export default class Profile extends Component {
               <h2>Most Common words</h2>
               <VictoryChart
                   theme={VictoryTheme.material}
-                  domain={{ x: [1, 14], y: [50, 200] }}
+                  domain={{ x: [1, 14], y: [50, 500] }}
                   height={500}
                   width={1000}
                   domainPadding={{ x: 20,y:20 }}
               >
                 <VictoryArea
                     groupComponent={<VictoryClipContainer clipPadding={{ top: 5, right: 10 }}/>}
-                    style={{ data: { stroke: "#c43a31", strokeWidth: 15, strokeLinecap: "round" } }}
+                    style={{ data: { stroke: "#c43a31", strokeWidth: 10, strokeLinecap: "round" } }}
                     data={word}
                     x="text"
                     y="value"
@@ -558,10 +562,30 @@ export default class Profile extends Component {
               <h2>Word Cloud</h2>
               <ReactWordcloud words={word} size={size} options={optionsForWords}/>
             </div>
+            <div className="card-header d-flex justify-content-between align-items-center">
+            <VictoryChart
+                theme={VictoryTheme.material}
+                domain={{ x: [1, 14]  , y: [5, 100] }}
+                height={500}
+                width={1200}
+                domainPadding={{ x: 2,y:2 }}
+            >
+              <VictoryBar horizontal
+                  style={{ data:
+                        { fill: "#c43a31",width: 30}
+                  }}
+
+                  data={occData}
+                  x={"name"}
+                  y={"occurrence"}
+              />
+            </VictoryChart>
+            </div>
           </div>
         </div>
         </div>
         </div>
+
     );
     return (
        leftSide
