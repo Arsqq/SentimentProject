@@ -7,6 +7,8 @@ import Home from "./components/ReactComponents/home.component";
 import Profile from "./components/ReactComponents/profile.component";
 import EventBus from "./common/EventBus";
 import UserTable from "./components/ReactComponents/userTable.component"
+import TwitterComponent from "./components/ReactComponents/tweets.component";
+import {NotFoundPageComponent} from "./components/ReactComponents/notFoundPage.component"
 
 class App extends Component {
     constructor(props) {
@@ -55,6 +57,8 @@ class App extends Component {
                         <Route path="/register" element={<Register />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/userTable" element={<UserTable />} />
+                        <Route path="/customTweets" element={<TwitterComponent />} />
+                        <Route path="*" element={<NotFoundPageComponent />} />
                     </Routes>
                 </div>
         );

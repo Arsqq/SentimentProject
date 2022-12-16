@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios';
 import authHeader from "../Service/auth-header";
+import {CircularProgress, LinearProgress} from "@mui/material";
+import Box from "@mui/material/Box";
 
 class FileUpload extends React.Component{
     constructor(){
@@ -9,12 +11,25 @@ class FileUpload extends React.Component{
             selectedFile:'',
             sentiments:[],
             trueSentiments:[],
+            showMessage: false,
+            showResult:false
         }
         this.submit = this.submit.bind(this);
 
 
 
         this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    _showMessage = (bool) => {
+        this.setState({
+            showMessage: bool
+        });
+    }
+
+    _showResult = (bool) => {
+        this.setState({
+            showResult: bool
+        });
     }
 
     handleInputChange(event) {
@@ -24,7 +39,10 @@ class FileUpload extends React.Component{
     }
 
     submit(){
+        this._showResult(false)
+        this._showMessage(true)
         const data = new FormData()
+        console.log("hi")
         data.append('file', this.state.selectedFile)
         console.warn(this.state.selectedFile);
         let url = "http://localhost:8060/api/sentiment/uploadFile";
@@ -34,6 +52,8 @@ class FileUpload extends React.Component{
                 let sentiments;
                 sentiments=res.data
                 console.log(sentiments)
+                this._showMessage(false)
+                this._showResult(true)
                 console.warn(res);
                 this.setState({
                     sentiments:sentiments,
@@ -44,44 +64,35 @@ class FileUpload extends React.Component{
 
 
 
-    getSentiments(){
-        let url="http://localhost:8060/api/sentiment/getSentimentList";
-        axios.get(url,{headers:authHeader()})
-            .then(res=>{
-                let trueSentiments;
-                trueSentiments=res.data;
-                console.log(trueSentiments)
-                this.setState({
-                    trueSentiments:trueSentiments,
-                });
-            })
-
-    }
-
     render(){
         const resultSentiments=this.state.sentiments
         const trueSentiments=this.state.trueSentiments
         return(
-            <div class="d-sm-flex justify-content-between align-items-center mb-4">
-                    <input type="file" class="btn btn-primary btn-sm d-none d-sm-inline-block" name="upload_file" onChange={this.handleInputChange} />
-                <h3 class="text-dark mb-0">Dashboard</h3>
-                <a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" onClick={()=>this.submit()}>
+            <div class="d-sm-flex justify-content-around mb-4">
+                    <input type="file" class="container-button" name="upload_file" onChange={this.handleInputChange} />
+                {this.state.showMessage && <Box sx={{
+                    width: '50%',
+                    textAlign: "center",
+                }}>
+                    <h3>Loading in Progress</h3>
+                    <LinearProgress/>
+                </Box>
+                }
+                {this.state.showResult && <Box sx={{
+                    width: '50%',
+                    textAlign: "center",
+                }}>
+                    <h3>Data is Ready</h3>
+                    <LinearProgress variant={"determinate"} value={100}/>
+                </Box>
+                }
+             <div class={"row"}>
+                <a class="container-button"  role="button" onClick={()=>this.submit()}>
                     <i class="fas fa-download fa-sm text-white-50"/>
                     &nbsp;Upload</a>
-                    {trueSentiments.map((data,index) => (
-                        <li key={index}>
-                            <p>{data.sentiment.sentiment},{data.sentiment.polarity}</p>
-                            {data.entities.map((ent, index) => {
-                                return (
-                                    <div key={index}>
-                                        <p>{ent.name}</p>
-                                        <p>{ent.type}</p>
-                                    </div>
-                                );
-                            })}
-                        </li>
-                    ))}
+             </div>
             </div>
+
         )
     }
 }
