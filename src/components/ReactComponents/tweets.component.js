@@ -15,6 +15,7 @@ import {VictoryArea, VictoryChart, VictoryClipContainer, VictoryLine, VictoryThe
 import merge from "validator/es/lib/util/merge";
 import ReactWordcloud from "react-wordcloud";
 import authHeader from "../Service/auth-header";
+import MaterialReactTable from "material-react-table";
 
 class TweetsComponent extends Component {
     constructor() {
@@ -107,7 +108,44 @@ class TweetsComponent extends Component {
 
         return arr2
     }
+
     render() {
+        const negativeFilter=this.state.tweets.filter(obj=>obj.sentiment.sentiment ==='NEGATIVE')
+        console.log(negativeFilter)
+        const negativeFilterByPolarity=negativeFilter.filter(obj=>obj.sentiment.polarity>=0.985)
+        console.log(negativeFilterByPolarity)
+        const positiveFilter=this.state.tweets.filter(obj=>obj.sentiment.sentiment ==='POSITIVE')
+        console.log(positiveFilter)
+        const positiveFilterByPolarity=positiveFilter.filter(obj=>obj.sentiment.polarity>=0.985)
+        console.log(positiveFilterByPolarity)
+        const mostNegativeSentiments=negativeFilterByPolarity.reduce((acc, curr) => {
+            if(!acc) {
+                acc = [curr.sentiment]
+            } else {
+                acc = acc.concat(curr.sentiment);
+            }
+
+            return acc;
+        }, [])
+        const mostPositiveSentiments=positiveFilterByPolarity.reduce((acc, curr) => {
+            if(!acc) {
+                acc = [curr.sentiment]
+            } else {
+                acc = acc.concat(curr.sentiment);
+            }
+
+            return acc;
+        }, [])
+
+
+
+
+
+        const negativeTableData=mostNegativeSentiments
+        const positiveTableDta=mostPositiveSentiments
+
+
+
 
         const negative=this.negativeCounts()
         const positive=this.positiveCounts()
@@ -208,7 +246,11 @@ class TweetsComponent extends Component {
         ];
         console.log(dataForAllEntities)
 
-
+        const columns = [
+            { header: "Sentiment", accessorKey: "sentiment" },
+            { header: "Polarity", accessorKey: "polarity" },
+            { header: "Text", accessorKey: "textContent"},
+        ];
 
 
         const optionS = {
@@ -352,7 +394,7 @@ class TweetsComponent extends Component {
                                 <h2>Most common entities</h2>
                                 <VictoryChart
                                     theme={VictoryTheme.material}
-                                    domain={{x: [1, 14], y: [5, 100]}}
+                                    domain={{x: [1, 14], y: [5, 90]}}
                                     height={500}
                                     width={1000}
                                     domainPadding={{x: 1, y: 20}}
@@ -368,6 +410,8 @@ class TweetsComponent extends Component {
                                         interpolation={2}/>
                                 </VictoryChart>
                             </div>
+                            <MaterialReactTable columns={columns} data={positiveTableDta} />
+                            <MaterialReactTable columns={columns} data={negativeTableData} />
                         </div>
                     </div>
                 </div>
