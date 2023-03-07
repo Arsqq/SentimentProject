@@ -19,6 +19,7 @@ import authHeader from "../Service/auth-header";
 import {useEffect, useState} from "react";
 import {button} from "react-validation/build/main";
 import {makeStyles} from "@mui/styles"
+import AuthService from "../Service/auth.service";
 
 const API_URL = "http://localhost:8060/api/allUsers/";
 
@@ -132,6 +133,12 @@ export default function CollapsibleTable() {
         getUsers();
     },[])
 
+    const currentUser = AuthService.getCurrentUser();
+    let showTable=false
+    if (currentUser.roles.includes("ROLE_ADMIN")){
+        showTable=true
+    }
+
     function getUsers(){
         axios.get(API_URL+'listUsers',{headers:authHeader()})
             .then(res=>{
@@ -140,31 +147,35 @@ export default function CollapsibleTable() {
     }
 
     return (
-        <div id="wrapper">
-            <NavBarComponent> </NavBarComponent>
-        <TableContainer component={Paper} className={classes.table} style={{fontFamily: 'Chocolate cyr-lat'}}>
-            <Table aria-label="collapsible table" style={{fontFamily: 'Chocolate cyr-lat'}}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell/>
-                        <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Moderator's Name</TableCell>
-                        <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Email</TableCell>
-                        <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Role&nbsp;</TableCell>
-                        <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Date of Last log on&nbsp;</TableCell>
-                        <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Action&nbsp;</TableCell>
+    <div id="wrapper">
+        <NavBarComponent> </NavBarComponent>
+        {showTable &&
+            <TableContainer component={Paper} className={classes.table} style={{fontFamily: 'Chocolate cyr-lat'}}>
+                <Table aria-label="collapsible table" style={{fontFamily: 'Chocolate cyr-lat'}}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell/>
+                            <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Moderator's
+                                Name</TableCell>
+                            <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Email</TableCell>
+                            <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Role&nbsp;</TableCell>
+                            <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Date of Last log
+                                on&nbsp;</TableCell>
+                            <TableCell align="center" style={{fontFamily: 'Chocolate cyr-lat'}}>Action&nbsp;</TableCell>
 
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        userList.map((row)=>(
-                          <Row key={row.name} row={row}/>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            userList.map((row) => (
+                                    <Row key={row.name} row={row}/>
+                                )
                             )
-                        )
-                    }
-                </TableBody>
-            </Table>
-        </TableContainer>
-        </div>
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        }
+    </div>
     );
 }

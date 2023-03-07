@@ -458,7 +458,7 @@ export default class Profile extends Component {
                       <i className="fas fa-download fa-sm text-white-50"/>
                       &nbsp;Export Data</a>
                   </div>
-                  <span className="container-button">{currentUser.username}</span>
+                  <span className="container-button2">{currentUser.username}</span>
                   <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"/>
                     </div>
                   <a href="/login" class="container-button" role="button"  onClick={this.logOut}>LogOut</a>
@@ -472,7 +472,7 @@ export default class Profile extends Component {
                   <div class="card-body">
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
-                        <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>DATA HANDLED for last analysis</span></div>
+                        <div class="text-uppercase text-primary fw-bold text-xs mb-1" style={{fontFamily: 'Chocolate cyr-lat'}}><span>DATA HANDLED for last analysis</span></div>
                         <div class="text-dark fw-bold h5 mb-0"><span>{dataAmount.length}</span></div>
                       </div>
                       <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"/></div>
@@ -485,8 +485,8 @@ export default class Profile extends Component {
                   <div class="card-body">
                     <div class="row align-items-center no-gutters">
                       <div class="col me-2">
-                        <div class="text-uppercase text-success fw-bold text-xs mb-1"><span>positive sentiments</span></div>
-                        <div class="text-dark fw-bold h5 mb-0"><span>
+                        <div class="text-uppercase text-success fw-bold text-xs mb-1" ><span>positive sentiments</span></div>
+                        <div class="text-dark fw-bold h5 mb-0" ><span>
                           {positive}
                         </span></div>
                       </div>
